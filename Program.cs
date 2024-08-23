@@ -58,8 +58,18 @@ class Program
                     break;
                 case 3:
                     bool translateToRussian = random.Next(2) == 0;
-                    wordToTranslate = translateToRussian ? wordPair.Key : wordPair.Value;
-                    correctTranslation = translateToRussian ? wordPair.Value : wordPair.Key;
+                    if (translateToRussian)
+                    {
+                        wordToTranslate = wordPair.Key;
+                        correctTranslation = wordPair.Value;
+                        Console.WriteLine("Переведите с английского на русский:");
+                    }
+                    else
+                    {
+                        wordToTranslate = wordPair.Value;
+                        correctTranslation = wordPair.Key;
+                        Console.WriteLine("Переведите с русского на английский:");
+                    }
                     break;
                 default:
                     Console.WriteLine("Неверный режим.");
