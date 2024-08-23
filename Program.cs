@@ -12,15 +12,9 @@ class Program
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = System.Text.Encoding.GetEncoding("utf-16");
 
-        // version
-        if (args.Contains("--version") || args.Contains("-v"))
-        {
-            Console.WriteLine("1.0.0");
-            return;
-        }
 
+        // Проверка наличия пути
         var path = args.FirstOrDefault();
-
         if (string.IsNullOrEmpty(path))
         {
             Console.WriteLine("Пожалуйста, укажите путь к файлу.");
@@ -36,8 +30,12 @@ class Program
 
         DictionaryReader reader = new DictionaryReader(path);
 
-        Console.WriteLine("Выберите язык (1 - русский, 2 - английский):");
-        int fromLanguage = int.Parse(Console.ReadLine());
+        // Выбор режима перевода
+        Console.WriteLine("Выберите режим перевода:");
+        Console.WriteLine("1 - с русского на английский");
+        Console.WriteLine("2 - с английского на русский");
+        Console.WriteLine("3 - случайный");
+        int mode = int.Parse(Console.ReadLine());
 
         // Перемешать список слов
         Random random = new Random();
@@ -45,15 +43,34 @@ class Program
 
         foreach (var wordPair in shuffledWords)
         {
-            string wordToTranslate = fromLanguage == 1 ? wordPair.Value : wordPair.Key;
+            string wordToTranslate;
+            string correctTranslation;
+
+            switch (mode)
+            {
+                case 1:
+                    wordToTranslate = wordPair.Value;
+                    correctTranslation = wordPair.Key;
+                    break;
+                case 2:
+                    wordToTranslate = wordPair.Key;
+                    correctTranslation = wordPair.Value;
+                    break;
+                case 3:
+                    bool translateToRussian = random.Next(2) == 0;
+                    wordToTranslate = translateToRussian ? wordPair.Key : wordPair.Value;
+                    correctTranslation = translateToRussian ? wordPair.Value : wordPair.Key;
+                    break;
+                default:
+                    Console.WriteLine("Неверный режим.");
+                    return;
+            }
 
             // Запросить у пользователя перевод слова
             Console.Write("Введите перевод слова " + wordToTranslate + ": ");
             string translation = Console.ReadLine();
 
             // Проверить правильность перевода
-            string correctTranslation = fromLanguage == 1 ? wordPair.Key : wordPair.Value;
-
             if (translation.Equals(correctTranslation, StringComparison.OrdinalIgnoreCase))
             {
                 Console.WriteLine("Верно!");
