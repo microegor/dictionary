@@ -12,7 +12,29 @@ class Program
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = System.Text.Encoding.GetEncoding("utf-16");
 
-        DictionaryReader reader = new DictionaryReader("dictionary.xml");
+        // version
+        if (args.Contains("--version") || args.Contains("-v"))
+        {
+            Console.WriteLine("1.0.0");
+            return;
+        }
+
+        var path = args.FirstOrDefault();
+
+        if (string.IsNullOrEmpty(path))
+        {
+            Console.WriteLine("Пожалуйста, укажите путь к файлу.");
+            return;
+        }
+
+        // Проверка наличия файла
+        if (!File.Exists(path))
+        {
+            Console.WriteLine("Файл не найден.");
+            return;
+        }
+
+        DictionaryReader reader = new DictionaryReader(path);
 
         Console.WriteLine("Выберите язык (1 - русский, 2 - английский):");
         int fromLanguage = int.Parse(Console.ReadLine());
@@ -24,7 +46,6 @@ class Program
         foreach (var wordPair in shuffledWords)
         {
             string wordToTranslate = fromLanguage == 1 ? wordPair.Value : wordPair.Key;
-            Console.WriteLine("Слово: " + wordToTranslate);
 
             // Запросить у пользователя перевод слова
             Console.Write("Введите перевод слова " + wordToTranslate + ": ");
